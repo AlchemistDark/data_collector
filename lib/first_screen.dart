@@ -14,15 +14,15 @@ class FirstPage extends StatefulWidget {
 }
 
 class _FirstPageState extends State<FirstPage> {
-
   int number = 0;
   double screenTime = 2.0;
   double photoTime = 0.25;
+  bool? showBackground = false;
 
   List<List<int>> _generateList(){
     List<List<int>> result = [];
-    for (int i = 1; i < 9; i++) {
-      for (int l = 1; l < 16; l++) {
+    for (int i = 1; i < 8; i++) {
+      for (int l = 1; l < 11; l++) {
         result.add([i, l]);
       }
     }
@@ -63,7 +63,7 @@ class _FirstPageState extends State<FirstPage> {
   }
 
   void _startUp(){
-    Session session = Session(number, screenTime, photoTime);
+    Session session = Session(number, screenTime, photoTime, showBackground);
     List<List<int>> list = _generateList();
     Navigator.push(
       context, MaterialPageRoute(
@@ -125,6 +125,16 @@ class _FirstPageState extends State<FirstPage> {
               )
             ]
           ),
+          CheckboxListTile(
+            title: const Text("Показывать фон?"),
+            value: showBackground,
+            onChanged: (newValue) {
+              setState(() {
+                showBackground = newValue;
+              });
+            },
+            controlAffinity: ListTileControlAffinity.leading,  //  <-- leading Checkbox
+          )
         ]
       ),
       floatingActionButton: FloatingActionButton(

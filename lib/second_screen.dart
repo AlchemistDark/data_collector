@@ -31,7 +31,7 @@ class _SecondPageState extends State<SecondPage> {
 
   void startTimer() {
     _timer?.cancel();
-    if(_currentIndex == 120) {
+    if(_currentIndex > 69) {
       stop = true;
       return;
     }
@@ -48,13 +48,108 @@ class _SecondPageState extends State<SecondPage> {
 
   @override
   Widget build(BuildContext context) {
+    final double mainWidth = MediaQuery.of(context).size.width;
+    final double areaWidth = mainWidth - 24; // two indents of 12 px.
+    final double areaHeight = areaWidth * 1.5;
+    final double distance = areaWidth / 6;
     startTimer();
     List list = widget.list;
     return Scaffold(
       body: Stack(
         children: [
           if(!stop)
-          TableScreen(list[_currentIndex]),
+          Container(
+            margin: const EdgeInsets.only(left: 12.0, top: 55.0, right: 12.0),
+            //color: Colors.red,
+            child: Stack(
+              children: [
+                if (widget.session.showBackground!)
+                Column(
+                  children: [
+                    Center(
+                      child: SizedBox(
+                        width: areaWidth,
+                        height: areaHeight,
+                        child: Column(
+                          children: [
+                            Expanded(
+                              child: Row(
+                                children: [
+                                  Expanded(
+                                    child: Container(
+                                      color: Colors.tealAccent
+                                    )
+                                  ),
+                                  Expanded(
+                                    child: Container(
+                                      color: Colors.limeAccent
+                                    )
+                                  )
+                                ]
+                              )
+                            ),
+                            Expanded(
+                              child: Row(
+                                children: [
+                                  Expanded(
+                                    child: Container(
+                                      color: Colors.limeAccent
+                                    )
+                                  ),
+                                  Expanded(
+                                    child: Container(
+                                      color: Colors.tealAccent
+                                    )
+                                  )
+                                ]
+                              )
+                            ),
+                            Expanded(
+                              child: Row(
+                                children: [
+                                  Expanded(
+                                    child: Container(
+                                      color: Colors.tealAccent
+                                    )
+                                  ),
+                                  Expanded(
+                                    child: Container(
+                                      color: Colors.limeAccent
+                                    )
+                                  )
+                                ]
+                              )
+                            ),
+                          ]
+                        )
+                      )
+                    ),
+                    Expanded(
+                      child: Container(
+                        color: Colors.green,
+                      )
+                    ),
+                  ]
+                ),
+                Column(
+                  children: [
+                    Center(
+                      child: SizedBox(
+                        width: areaWidth,
+                        height: areaHeight,
+                        child: TableScreen(list[_currentIndex], distance)
+                      )
+                    ),
+                    Expanded(
+                      child: Container(
+                        width: areaWidth,
+                      )
+                    )
+                  ]
+                )
+              ]
+            )
+          ),
           if(stop)
           const Center(
             child: Text(
@@ -71,8 +166,41 @@ class _SecondPageState extends State<SecondPage> {
 
 class TableScreen extends StatelessWidget {
   final List<int> indexes;
+  final double distance;
 
-  const TableScreen(this.indexes, {Key? key}) : super(key: key);
+  late final int xScale;
+  late final int yScale;
+  late final double xDistance;
+  late final double yDistance;
+
+  TableScreen(
+    this.indexes,
+    this.distance,
+    {Key? key}
+  ) : super(key: key) {
+    xScale = (indexes[0] - 1);
+    yScale = (indexes[1] - 1);
+    switch(xScale){
+      case 0:
+        xDistance = 0;
+        break;
+      case 6:
+        xDistance = (distance * xScale - 14);
+        break;
+      default:
+        xDistance = (distance * xScale - 7);
+    }
+    switch(yScale){
+      case 0:
+        yDistance = 0;
+        break;
+      case 9:
+        yDistance = (distance * yScale - 14);
+        break;
+      default:
+        yDistance = (distance * yScale - 7);
+    }
+  }
 
   Widget table(List<int> indexes){
     return Text('');
@@ -80,67 +208,15 @@ class TableScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return
-      Column(
-      children: rows(indexes),
-    );
-  }
-
-  List<Widget> rows(List<int> localIndexes){
-    List<Widget> result = [];
-    for (int i = 1; i < 16; i++) {
-      bool isContent = (i == localIndexes[1]);
-      result.add(
-        Expanded(
-          child: Row(
-            children: cells(isContent, localIndexes)
-          )
-        )
-      );
-    }
-    return result;
-  }
-
-  List<Widget> cells(bool isContent, List<int> localIndexes){
-    List<Widget> result = [];
-    for (int i = 1; i < 9; i++){
-      bool localIsContent = ((i == localIndexes[0]) && isContent);
-      result.add(Cell(localIsContent));
-    }
-    return result;
-  }
-
-
-}
-
-class Cell extends StatelessWidget {
-
-  bool isContent;
-
-  Cell(this.isContent, {Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Expanded(
-      child: Stack(
-        children: [
-          if(isContent)
-          Center(
-            child: CustomPaint(
-              size: const Size(14, 14),
-              painter: CrossPainter()
-            )
-          )
-        ]
+    return Container (
+      margin: EdgeInsets.only(left: xDistance, top: yDistance),
+      child: CustomPaint(
+        size: const Size(14, 14),
+        painter: CrossPainter()
       ),
     );
   }
-
-
-
-
 }
-
 
 class CrossPainter extends CustomPainter{
 
