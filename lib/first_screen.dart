@@ -108,94 +108,97 @@ class _FirstPageState extends State<FirstPage> {
       appBar: AppBar(
         title: const Text("Введите настройки"),
       ),
-      body:  Column(
+      body: ListView(
+        shrinkWrap: true,
         children: [
-          const Text("Номер"),
-          TextFormField(
-            initialValue: "Вводить сюда",
-            keyboardType: TextInputType.number,
-            onChanged: (newText)=>_onNumberChanged(newText),
-            onFieldSubmitted: (newText)=>_onNumberChanged(newText)
-          ),
-          const Text("Пол"),
-          ListTile(
-            title: const Text('Мужской'),
-            leading: Radio<Gender>(
-              value: Gender.male,
-              groupValue: gender,
-              onChanged: (Gender? value) {
-                setState(() {
-                  gender = value!;
-                });
-              },
+          Column(
+            children: [
+              const Text("Номер"),
+              TextFormField(
+                initialValue: "Вводить сюда",
+                keyboardType: TextInputType.number,
+                onChanged: (newText)=>_onNumberChanged(newText),
+                onFieldSubmitted: (newText)=>_onNumberChanged(newText)
+              ),
+              const Text("Пол"),
+              ListTile(
+                title: const Text('Мужской'),
+                leading: Radio<Gender>(
+                  value: Gender.male,
+                  groupValue: gender,
+                  onChanged: (Gender? value) {
+                    setState(() {
+                      gender = value!;
+                  });
+                },
+              ),
             ),
-          ),
-          ListTile(
-            title: const Text('Женский'),
-            leading: Radio<Gender>(
-              value: Gender.female,
-              groupValue: gender,
-              onChanged: (Gender? value) {
-                setState(() {
-                  gender = value!;
-                });
-              },
+            ListTile(
+              title: const Text('Женский'),
+              leading: Radio<Gender>(
+                value: Gender.female,
+                groupValue: gender,
+                onChanged: (Gender? value) {
+                  setState(() {
+                    gender = value!;
+                  });
+                },
+              ),
             ),
-          ),
-          const Text("Модель смартфона"),
-          ListTile(
-            title: const Text('Redmy'),
-            leading: Radio<PhoneModel>(
-              value: PhoneModel.redmy,
-              groupValue: model,
-              onChanged: (PhoneModel? value) {
-                setState(() {
-                  model = value!;
-                });
-              },
+            const Text("Модель смартфона"),
+            ListTile(
+              title: const Text('Redmy'),
+              leading: Radio<PhoneModel>(
+                value: PhoneModel.redmy,
+                groupValue: model,
+                onChanged: (PhoneModel? value) {
+                  setState(() {
+                    model = value!;
+                  });
+                },
+              ),
             ),
-          ),
-          ListTile(
-            title: const Text('Sony'),
-            leading: Radio<PhoneModel>(
-              value: PhoneModel.sony,
-              groupValue: model,
-              onChanged: (PhoneModel? value) {
-                setState(() {
-                  model = value!;
-                });
-              },
+            ListTile(
+              title: const Text('Sony'),
+              leading: Radio<PhoneModel>(
+                value: PhoneModel.sony,
+                groupValue: model,
+                onChanged: (PhoneModel? value) {
+                  setState(() {
+                    model = value!;
+                  });
+                },
+              ),
             ),
-          ),
-          ListTile(
-            title: const Text('Samsung'),
-            leading: Radio<PhoneModel>(
-              value: PhoneModel.samsung,
-              groupValue: model,
-              onChanged: (PhoneModel? value) {
-                setState(() {
-                  model = value!;
-                });
-              },
+            ListTile(
+              title: const Text('Samsung'),
+              leading: Radio<PhoneModel>(
+                value: PhoneModel.samsung,
+                groupValue: model,
+                onChanged: (PhoneModel? value) {
+                  setState(() {
+                    model = value!;
+                  });
+                },
+              ),
             ),
-          ),
-          const Text("Расстояние"),
-          ListTile(
-            title: const Text('15 см'),
-            leading: Radio<Distance>(
-              value: Distance.x15,
-              groupValue: distance,
-              onChanged: (Distance? value) {
-                setState(() {
-                  distance = value!;
-                });
-              },
+            const Text("Расстояние"),
+            ListTile(
+              title: const Text('15 см'),
+              leading: Radio<Distance>(
+                value: Distance.x15,
+                groupValue: distance,
+                onChanged: (Distance? value) {
+                  setState(() {
+                    distance = value!;
+                  });
+                },
+              ),
             ),
-          ),
-          ListTile(
-            title: const Text('30 см'),
-            leading: Radio<Distance>(
-              value: Distance.x30,
+            ListTile(
+              title: const Text('30 см'),
+              leading: Radio<Distance>(
+                value: Distance.x30,
               groupValue: distance,
               onChanged: (Distance? value) {
                 setState(() {
@@ -288,7 +291,7 @@ class _FirstPageState extends State<FirstPage> {
             controlAffinity: ListTileControlAffinity.leading,  //  <-- leading Checkbox
           )
         ]
-      ),
+      )]),
       floatingActionButton: FloatingActionButton(
         onPressed: _startUp,
         tooltip: 'Start',
