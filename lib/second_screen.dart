@@ -36,11 +36,9 @@ class _SecondPageState extends State<SecondPage> {
       return;
     }
     int duration = (widget.session.screenTime * 1000).round();
-    print("duration $duration");
     _timer = Timer.periodic(Duration(milliseconds: duration), (timer) { // callback
       setState(() {
         _currentIndex++; // every second, increment the counted seconds
-        print(_currentIndex); // print out how many seconds have been counted so far
         //timedDuration = Duration(seconds: _countedSeconds); // update the total duration of the stopwatch so far
       });
     });
@@ -84,7 +82,6 @@ class _SecondPageState extends State<SecondPage> {
           break;
       }
       double result = ((areaHeight - 20) / _matrixSize);
-      print("result $result");
       return result;
     }
 
@@ -222,11 +219,9 @@ class TableScreen extends StatelessWidget {
     switch(xScale){
       case 0:
         _xDistance = 0;
-        print('xScale $xScale');
         break;
       default:
         _xDistance = (xDistance * xScale);
-        print('xScale $xScale');
     }
     switch(yScale){
       case 0:

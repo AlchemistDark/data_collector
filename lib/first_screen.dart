@@ -51,13 +51,11 @@ class _FirstPageState extends State<FirstPage> {
       }
     }
     result.shuffle();
-    print(result);
     return result;
   }
 
   void _onNumberChanged(String newText){
     number = newText;
-    print(number);
   }
 
   void _screenTimeUp(){
@@ -91,7 +89,6 @@ class _FirstPageState extends State<FirstPage> {
 
     //widget.data.setStringList(_listOfNumbers)
     Session session = Session(number, gender, model, distance, matrixSize, screenTime, photoTime, showBackground);
-    print("Дебаг ${session.number} ${session.gender} ${session.phoneModel}");
     List<List<int>> list = _generateList();
     Navigator.push(
       context, MaterialPageRoute(
@@ -133,165 +130,167 @@ class _FirstPageState extends State<FirstPage> {
                 },
               ),
             ),
-            ListTile(
-              title: const Text('Женский'),
-              leading: Radio<Gender>(
-                value: Gender.female,
-                groupValue: gender,
-                onChanged: (Gender? value) {
-                  setState(() {
-                    gender = value!;
-                  });
-                },
+              ListTile(
+                title: const Text('Женский'),
+                leading: Radio<Gender>(
+                  value: Gender.female,
+                  groupValue: gender,
+                  onChanged: (Gender? value) {
+                    setState(() {
+                      gender = value!;
+                    });
+                  },
+                ),
               ),
-            ),
-            const Text("Модель смартфона"),
-            ListTile(
-              title: const Text('Redmy'),
-              leading: Radio<PhoneModel>(
-                value: PhoneModel.redmy,
-                groupValue: model,
-                onChanged: (PhoneModel? value) {
-                  setState(() {
-                    model = value!;
-                  });
-                },
+              const Text("Модель смартфона"),
+              ListTile(
+                title: const Text('Redmy'),
+                leading: Radio<PhoneModel>(
+                  value: PhoneModel.redmy,
+                  groupValue: model,
+                  onChanged: (PhoneModel? value) {
+                    setState(() {
+                      model = value!;
+                    });
+                  },
+                ),
               ),
-            ),
-            ListTile(
-              title: const Text('Sony'),
-              leading: Radio<PhoneModel>(
-                value: PhoneModel.sony,
-                groupValue: model,
-                onChanged: (PhoneModel? value) {
-                  setState(() {
-                    model = value!;
-                  });
-                },
+              ListTile(
+                title: const Text('Sony'),
+                leading: Radio<PhoneModel>(
+                  value: PhoneModel.sony,
+                  groupValue: model,
+                  onChanged: (PhoneModel? value) {
+                    setState(() {
+                      model = value!;
+                    });
+                  },
+                ),
               ),
-            ),
-            ListTile(
-              title: const Text('Samsung'),
-              leading: Radio<PhoneModel>(
-                value: PhoneModel.samsung,
-                groupValue: model,
-                onChanged: (PhoneModel? value) {
-                  setState(() {
-                    model = value!;
-                  });
-                },
+              ListTile(
+                title: const Text('Samsung'),
+                leading: Radio<PhoneModel>(
+                  value: PhoneModel.samsung,
+                  groupValue: model,
+                  onChanged: (PhoneModel? value) {
+                    setState(() {
+                      model = value!;
+                    });
+                  },
+                ),
               ),
-            ),
-            const Text("Расстояние"),
-            ListTile(
-              title: const Text('15 см'),
-              leading: Radio<Distance>(
-                value: Distance.x15,
-                groupValue: distance,
-                onChanged: (Distance? value) {
-                  setState(() {
-                    distance = value!;
-                  });
-                },
+              const Text("Расстояние"),
+              ListTile(
+                title: const Text('15 см'),
+                leading: Radio<Distance>(
+                  value: Distance.x15,
+                  groupValue: distance,
+                  onChanged: (Distance? value) {
+                    setState(() {
+                      distance = value!;
+                    });
+                  },
+                ),
               ),
-            ),
-            ListTile(
-              title: const Text('30 см'),
-              leading: Radio<Distance>(
-                value: Distance.x30,
-              groupValue: distance,
-              onChanged: (Distance? value) {
-                setState(() {
-                  distance = value!;
-                });
-              },
-            ),
-          ),
-          Row(
-            children: [
-              Expanded(
-                child: Text(
-                  '$screenTime',
-                  textAlign: TextAlign.center
+              ListTile(
+                title: const Text('30 см'),
+                leading: Radio<Distance>(
+                  value: Distance.x30,
+                  groupValue: distance,
+                  onChanged: (Distance? value) {
+                    setState(() {
+                      distance = value!;
+                    });
+                  },
+                ),
+              ),
+              Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    '$screenTime',
+                    textAlign: TextAlign.center
+                  )
+                ),
+                AnimatedButton(
+                  icon: const Icon(Icons.add),
+                  onPressed: (){setState((){_screenTimeUp();});}
+                ),
+                AnimatedButton(
+                  icon: const Icon(Icons.remove),
+                  onPressed: (){setState((){_screenTimeDown();});}
                 )
+              ]
+            ),
+              Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      photoTime.toStringAsPrecision(2),
+                      textAlign: TextAlign.center
+                    )
+                  ),
+                  AnimatedButton(
+                    icon: const Icon(Icons.add),
+                    onPressed: (){setState((){_photoTimeUp();});}
+                  ),
+                  AnimatedButton(
+                    icon: const Icon(Icons.remove),
+                    onPressed: (){setState((){_photoTimeDown();});}
+                  )
+                ]
               ),
-              AnimatedButton(
-                icon: const Icon(Icons.add),
-                onPressed: (){setState((){_screenTimeUp(); print("$screenTime");});}
+              const Text("Размер сетки"),
+              ListTile(
+                title: const Text('5 x 7'),
+                leading: Radio<MatrixSize>(
+                  value: MatrixSize.x5x7,
+                  groupValue: matrixSize,
+                  onChanged: (MatrixSize? value) {
+                    setState(() {
+                      matrixSize = value!;
+                    });
+                  },
+                ),
               ),
-              AnimatedButton(
-                icon: const Icon(Icons.remove),
-                onPressed: (){setState((){_screenTimeDown(); print("$screenTime");});}
+              ListTile(
+                title: const Text('7 x 10'),
+                leading: Radio<MatrixSize>(
+                  value: MatrixSize.x7x10,
+                  groupValue: matrixSize,
+                  onChanged: (MatrixSize? value) {
+                    setState(() {
+                      matrixSize = value!;
+                    });
+                  },
+                ),
+              ),
+              ListTile(
+                title: const Text('9 x 13'),
+                leading: Radio<MatrixSize>(
+                  value: MatrixSize.x9x13,
+                  groupValue: matrixSize,
+                  onChanged: (MatrixSize? value) {
+                    setState(() {
+                      matrixSize = value!;
+                    });
+                  },
+                ),
+              ),
+              CheckboxListTile(
+                title: const Text("Показывать фон?"),
+                value: showBackground,
+                onChanged: (newValue) {
+                  setState(() {
+                    showBackground = newValue;
+                  });
+                },
+                controlAffinity: ListTileControlAffinity.leading,  //  <-- leading Checkbox
               )
             ]
-          ),
-          Row(
-            children: [
-              Expanded(
-                child: Text(
-                  photoTime.toStringAsPrecision(2),
-                  textAlign: TextAlign.center
-                )
-              ),
-              AnimatedButton(
-                icon: const Icon(Icons.add),
-                onPressed: (){setState((){_photoTimeUp(); print("$photoTime");});}
-              ),
-              AnimatedButton(
-                icon: const Icon(Icons.remove),
-                onPressed: (){setState((){_photoTimeDown(); print("$photoTime");});}
-              )
-            ]
-          ),
-          const Text("Размер сетки"),
-          ListTile(
-            title: const Text('5 x 7'),
-            leading: Radio<MatrixSize>(
-              value: MatrixSize.x5x7,
-              groupValue: matrixSize,
-              onChanged: (MatrixSize? value) {
-                setState(() {
-                  matrixSize = value!;
-                });
-              },
-            ),
-          ),
-          ListTile(
-            title: const Text('7 x 10'),
-            leading: Radio<MatrixSize>(
-              value: MatrixSize.x7x10,
-              groupValue: matrixSize,
-              onChanged: (MatrixSize? value) {
-                setState(() {
-                  matrixSize = value!;
-                });
-              },
-            ),
-          ),
-          ListTile(
-            title: const Text('9 x 13'),
-            leading: Radio<MatrixSize>(
-              value: MatrixSize.x9x13,
-              groupValue: matrixSize,
-              onChanged: (MatrixSize? value) {
-                setState(() {
-                  matrixSize = value!;
-                });
-              },
-            ),
-          ),
-          CheckboxListTile(
-            title: const Text("Показывать фон?"),
-            value: showBackground,
-            onChanged: (newValue) {
-              setState(() {
-                showBackground = newValue;
-              });
-            },
-            controlAffinity: ListTileControlAffinity.leading,  //  <-- leading Checkbox
           )
         ]
-      )]),
+      ),
       floatingActionButton: FloatingActionButton(
         onPressed: _startUp,
         tooltip: 'Start',
