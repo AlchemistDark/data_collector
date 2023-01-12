@@ -31,7 +31,7 @@ class _SecondPageState extends State<SecondPage> {
 
   void startTimer() {
     _timer?.cancel();
-    if(_currentIndex > 69) {
+    if(_currentIndex > (widget.list.length - 1)) {
       stop = true;
       return;
     }
@@ -51,7 +51,44 @@ class _SecondPageState extends State<SecondPage> {
     final double mainWidth = MediaQuery.of(context).size.width;
     final double areaWidth = mainWidth - 24; // two indents of 12 px.
     final double areaHeight = areaWidth * 1.5;
-    final double distance = areaWidth / 6;
+    //final double distance = areaWidth / 6;
+
+    double getXDistance(){
+      int _matrixSize;
+      switch (widget.session.size) {
+        case MatrixSize.x5x7:
+          _matrixSize = 4;
+          break;
+        case MatrixSize.x7x10:
+          _matrixSize = 6;
+          break;
+        case MatrixSize.x9x13:
+          _matrixSize = 8;
+          break;
+      }
+      double result = ((areaWidth - 20) / _matrixSize);
+      return result;
+    }
+
+    double getYDistance(){
+      int _matrixSize;
+      switch (widget.session.size) {
+        case MatrixSize.x5x7:
+          _matrixSize = 6;
+          break;
+        case MatrixSize.x7x10:
+          _matrixSize = 9;
+          break;
+        case MatrixSize.x9x13:
+          _matrixSize = 12;
+          break;
+      }
+      double result = ((areaHeight - 20) / _matrixSize);
+      print("result $result");
+      return result;
+    }
+
+
     startTimer();
     List list = widget.list;
     return Scaffold(
@@ -137,7 +174,7 @@ class _SecondPageState extends State<SecondPage> {
                       child: SizedBox(
                         width: areaWidth,
                         height: areaHeight,
-                        child: TableScreen(list[_currentIndex], distance)
+                        child: TableScreen(list[_currentIndex], getXDistance(), getYDistance())
                       )
                     ),
                     Expanded(
@@ -166,39 +203,37 @@ class _SecondPageState extends State<SecondPage> {
 
 class TableScreen extends StatelessWidget {
   final List<int> indexes;
-  final double distance;
+  final double xDistance;
+  final double yDistance;
 
   late final int xScale;
   late final int yScale;
-  late final double xDistance;
-  late final double yDistance;
+  late final double _xDistance;
+  late final double _yDistance;
 
   TableScreen(
     this.indexes,
-    this.distance,
+    this.xDistance,
+    this.yDistance,
     {Key? key}
   ) : super(key: key) {
     xScale = (indexes[0] - 1);
     yScale = (indexes[1] - 1);
     switch(xScale){
       case 0:
-        xDistance = 0;
-        break;
-      case 6:
-        xDistance = (distance * xScale - 14);
+        _xDistance = 0;
+        print('xScale $xScale');
         break;
       default:
-        xDistance = (distance * xScale - 7);
+        _xDistance = (xDistance * xScale);
+        print('xScale $xScale');
     }
     switch(yScale){
       case 0:
-        yDistance = 0;
-        break;
-      case 9:
-        yDistance = (distance * yScale - 14);
+        _yDistance = 0;
         break;
       default:
-        yDistance = (distance * yScale - 7);
+        _yDistance = (yDistance * yScale);
     }
   }
 
@@ -209,9 +244,9 @@ class TableScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container (
-      margin: EdgeInsets.only(left: xDistance, top: yDistance),
+      margin: EdgeInsets.only(left: _xDistance, top: _yDistance),
       child: CustomPaint(
-        size: const Size(14, 14),
+        size: const Size(20, 20),
         painter: CrossPainter()
       ),
     );
@@ -226,15 +261,15 @@ class CrossPainter extends CustomPainter{
     final line = Paint()
       ..color = Colors.black
       ..style = PaintingStyle.stroke
-      ..strokeWidth = 1.5;
+      ..strokeWidth = 2.0;
     canvas.drawLine(
-      const Offset(0.0, 7.0),
-      const Offset(14.0, 7.0),
+      const Offset(0.0, 10.0),
+      const Offset(20.0, 10.0),
       line
     );
     canvas.drawLine(
-      const Offset(7.0, 0.0),
-      const Offset(7.0, 14.0),
+      const Offset(10.0, 0.0),
+      const Offset(10.0, 20.0),
       line
     );
   }

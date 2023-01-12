@@ -1,40 +1,31 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import 'package:shared_preferences/shared_preferences.dart';
+
+import 'package:data_collector/shared_preferences_numbers.dart';
 import 'package:data_collector/first_screen.dart';
 
-void main() {
+void main() async {
+  // final SharedPreferences shp = await SharedPreferences.getInstance();
+  // final SharedPreferencesNumberDataSource dataSource = SharedPreferencesNumberDataSource(shp);
+  //runApp(MyApp(dataSource));
   runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
+  //final SharedPreferencesNumberDataSource dataSource;
+
   const MyApp({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Data Collector',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: FirstPage(),
     );
-  }
-}
-
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({Key? key, required this.title}) : super(key: key);
-
-  final String title;
-
-  @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-
-  @override
-  Widget build(BuildContext context) {
-    return const FirstPage();
   }
 }
