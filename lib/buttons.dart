@@ -23,7 +23,6 @@ class _AnimatedButtonState extends State<AnimatedButton> {
   Widget build(BuildContext context) {
     Color green = const Color(0xFF52B69A);
     Color color = const Color(0xFF454E54);
-    Color iconColor = const Color(0xFFA6ADB5);
 
     return Listener(
       child: Container(

@@ -170,7 +170,6 @@ class _SecondPageState extends State<SecondPage> {
     }
     int duration = (widget.session.photoTime * 1000).round(); // Задержка в миллисекундах.
     _timer = Timer.periodic(Duration(milliseconds: duration), (timer) async{ // Кажется эта строка заставляет всю фукцию циклически повторятся.
-    print('номер фото $_photoIndex');
 
       try {
         await _initializeControllerFuture;
@@ -184,12 +183,12 @@ class _SecondPageState extends State<SecondPage> {
 
       if (photoCount < photoNum) {
         setState(() {
-          photoCount++; // every second, increment the counted seconds
+          photoCount++;
         });
       } else {
         photoCount = 0;
         _currentIndex++;
-      };
+      }
     });
   }
 
@@ -201,7 +200,7 @@ class _SecondPageState extends State<SecondPage> {
       ResolutionPreset.medium,
     );
     _initializeControllerFuture = _controller.initialize();
-    if (widget.session.autoFocusEneble!){
+    if (widget.session.autoFocusEnable!){
       _controller.setFocusMode(FocusMode.auto);
     } else {
       _controller.setFocusMode(FocusMode.locked);
@@ -400,10 +399,6 @@ class TableScreen extends StatelessWidget {
       default:
         _yDistance = (yDistance * yScale);
     }
-  }
-
-  Widget table(List<int> indexes){
-    return Text('');
   }
 
   @override

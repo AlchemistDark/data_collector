@@ -7,7 +7,7 @@ class Session{
   final double screenTime;
   final double photoTime;
   final bool? showBackground;
-  final bool? autoFocusEneble;
+  final bool? autoFocusEnable;
 
   Session(
     this.number,
@@ -18,7 +18,7 @@ class Session{
     this.screenTime,
     this.photoTime,
     this.showBackground,
-    this.autoFocusEneble
+    this.autoFocusEnable
   );
 }
 
