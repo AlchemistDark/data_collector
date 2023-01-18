@@ -1,4 +1,4 @@
-import 'package:data_collector/numbers_class.dart';
+import 'package:camera/camera.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -7,16 +7,14 @@ import 'package:data_collector/session_class.dart';
 import 'package:data_collector/second_screen.dart';
 
 class FirstPage extends StatefulWidget {
-
-  const FirstPage({Key? key}) : super(key: key);
+  final CameraDescription camera;
+  const FirstPage({Key? key, required this.camera}) : super(key: key);
 
   @override
   State<FirstPage> createState() => _FirstPageState();
 }
 
 class _FirstPageState extends State<FirstPage> {
-
-  late NumbersController stream;
 
   String number = "0";
   Gender gender = Gender.male;
@@ -26,6 +24,7 @@ class _FirstPageState extends State<FirstPage> {
   double screenTime = 2.0;
   double photoTime = 0.25;
   bool? showBackground = false;
+  bool? autoFocusEneble = false;
 
   List<List<int>> _generateList(){
     int _wight;
@@ -59,10 +58,10 @@ class _FirstPageState extends State<FirstPage> {
   }
 
   void _screenTimeUp(){
-    if(screenTime < 3.0) {
+    //if(screenTime < 3.0) {
       screenTime = screenTime + 0.5;
       setState(() {});
-    }
+    //}
   }
 
   void _screenTimeDown(){
@@ -72,7 +71,7 @@ class _FirstPageState extends State<FirstPage> {
     }
   }
   void _photoTimeUp(){
-    if(photoTime < 0.25) {
+    if(photoTime < screenTime) {
       photoTime = photoTime + 0.05;
       setState(() {});
     }
@@ -85,21 +84,17 @@ class _FirstPageState extends State<FirstPage> {
   }
 
   void _startUp(){
-    //strList.add();
-
-    //widget.data.setStringList(_listOfNumbers)
-    Session session = Session(number, gender, model, distance, matrixSize, screenTime, photoTime, showBackground);
+    Session session = Session(number, gender, model, distance, matrixSize, screenTime, photoTime, showBackground, autoFocusEneble);
     List<List<int>> list = _generateList();
     Navigator.push(
       context, MaterialPageRoute(
-        builder: (context) {
-          return SecondPage(session: session, list: list);
-        }
-      )
+      builder: (context) {
+        return SecondPage(session: session, list: list, camera: widget.camera,);
+      }
+    )
     );
   }
 
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -126,10 +121,10 @@ class _FirstPageState extends State<FirstPage> {
                   onChanged: (Gender? value) {
                     setState(() {
                       gender = value!;
-                  });
-                },
+                    });
+                  },
+                ),
               ),
-            ),
               ListTile(
                 title: const Text('Женский'),
                 leading: Radio<Gender>(
@@ -205,23 +200,25 @@ class _FirstPageState extends State<FirstPage> {
                 ),
               ),
               Row(
-              children: [
-                Expanded(
-                  child: Text(
-                    '$screenTime',
-                    textAlign: TextAlign.center
+                children: [
+                  Expanded(
+                    child: Text(
+                      '$screenTime',
+                      textAlign: TextAlign.center
+                    )
+                  ),
+                  AnimatedButton(
+                    icon: const Icon(Icons.add),
+                    onPressed: (){
+                      setState((){_screenTimeUp();});
+                    }
+                  ),
+                  AnimatedButton(
+                    icon: const Icon(Icons.remove),
+                    onPressed: (){setState((){_screenTimeDown();});}
                   )
-                ),
-                AnimatedButton(
-                  icon: const Icon(Icons.add),
-                  onPressed: (){setState((){_screenTimeUp();});}
-                ),
-                AnimatedButton(
-                  icon: const Icon(Icons.remove),
-                  onPressed: (){setState((){_screenTimeDown();});}
-                )
-              ]
-            ),
+                ]
+              ),
               Row(
                 children: [
                   Expanded(
@@ -283,6 +280,16 @@ class _FirstPageState extends State<FirstPage> {
                 onChanged: (newValue) {
                   setState(() {
                     showBackground = newValue;
+                  });
+                },
+                controlAffinity: ListTileControlAffinity.leading,  //  <-- leading Checkbox
+              ),
+              CheckboxListTile(
+                title: const Text("Использовать автофокус?"),
+                value: autoFocusEneble,
+                onChanged: (newValue) {
+                  setState(() {
+                    autoFocusEneble = newValue;
                   });
                 },
                 controlAffinity: ListTileControlAffinity.leading,  //  <-- leading Checkbox

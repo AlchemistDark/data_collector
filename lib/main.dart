@@ -1,31 +1,26 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:camera/camera.dart';
 
-import 'package:data_collector/shared_preferences_numbers.dart';
 import 'package:data_collector/first_screen.dart';
 
 void main() async {
-  // final SharedPreferences shp = await SharedPreferences.getInstance();
-  // final SharedPreferencesNumberDataSource dataSource = SharedPreferencesNumberDataSource(shp);
-  //runApp(MyApp(dataSource));
-  runApp(const MyApp());
+  WidgetsFlutterBinding.ensureInitialized();
+
+  final cameras = await availableCameras();
+
+  final frontCam = cameras[1];
+  runApp(MyApp(camera: frontCam,));
 }
 
 class MyApp extends StatelessWidget {
-  //final SharedPreferencesNumberDataSource dataSource;
-
-  const MyApp({Key? key}) : super(key: key);
-
+  const MyApp({Key? key, required this.camera}) : super(key: key);
+  final CameraDescription camera;
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Data Collector',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: FirstPage(),
+      home:  FirstPage(camera: camera,),
     );
   }
 }
