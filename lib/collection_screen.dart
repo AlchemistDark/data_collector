@@ -6,14 +6,15 @@ import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
 import 'package:image_gallery_saver/image_gallery_saver.dart';
 
+import 'package:data_collector/background.dart';
 import 'package:data_collector/session_class.dart';
 
-class SecondPage extends StatefulWidget {
-  final Session session;
+class CollectionPage extends StatefulWidget {
+  final CollectionSession session;
   final List<List<int>> list;
 
   final CameraDescription camera;
-  const SecondPage({
+  const CollectionPage({
     required this.session,
     required this.list,
     required this.camera,
@@ -21,10 +22,10 @@ class SecondPage extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  State<SecondPage> createState() => _SecondPageState(session.screenTime, session.photoTime);
+  State<CollectionPage> createState() => _CollectionPageState(session.screenTime, session.photoTime);
 }
 
-class _SecondPageState extends State<SecondPage> {
+class _CollectionPageState extends State<CollectionPage> {
 
   bool stop = false;
   Timer? _timer;
@@ -40,7 +41,7 @@ class _SecondPageState extends State<SecondPage> {
   final double screenTime;
   final double photoTime;
 
-  _SecondPageState(this.screenTime, this.photoTime){
+  _CollectionPageState(this.screenTime, this.photoTime){
     // photoNum хранить сколько фото должно быть сделано пока показывается один крестик.
     // Как только это количество будет сделано, отрисовывается новый.
     photoNum = screenTime ~/ photoTime;
@@ -156,7 +157,7 @@ class _SecondPageState extends State<SecondPage> {
         yFactor = 'Err';
         break;
     }
-    String result = '${widget.session.number}_${gen}_${model}_${dist}_${widget.session.screenTime}_${widget.session.photoTime.toStringAsPrecision(2)}_$xFactor${yFactor}_${_currentIndex}_$_photoIndex';
+    String result = 'сборка_${widget.session.number}_${gen}_${model}_${dist}_${widget.session.screenTime}_${widget.session.photoTime.toStringAsPrecision(2)}_$xFactor${yFactor}_${_currentIndex}_$_photoIndex';
     return result;
   }
 
@@ -262,104 +263,45 @@ class _SecondPageState extends State<SecondPage> {
       body: Stack(
         children: [
           if(!stop)
-          Container(
-            margin: const EdgeInsets.only(left: 12.0, top: 55.0, right: 12.0),
-            child: Stack(
-              children: [
-                if (widget.session.showBackground!)
-                Column(
-                  children: [
-                    Center(
-                      child: SizedBox(
-                        width: areaWidth,
-                        height: areaHeight,
-                        child: Column(
-                          children: [
-                            Expanded(
-                              child: Row(
-                                children: [
-                                  Expanded(
-                                    child: Container(
-                                      color: Colors.tealAccent
-                                    )
-                                  ),
-                                  Expanded(
-                                    child: Container(
-                                      color: Colors.limeAccent
-                                    )
-                                  )
-                                ]
-                              )
-                            ),
-                            Expanded(
-                              child: Row(
-                                children: [
-                                  Expanded(
-                                    child: Container(
-                                      color: Colors.limeAccent
-                                    )
-                                  ),
-                                  Expanded(
-                                    child: Container(
-                                      color: Colors.tealAccent
-                                    )
-                                  )
-                                ]
-                              )
-                            ),
-                            Expanded(
-                              child: Row(
-                                children: [
-                                  Expanded(
-                                    child: Container(
-                                      color: Colors.tealAccent
-                                    )
-                                  ),
-                                  Expanded(
-                                    child: Container(
-                                      color: Colors.limeAccent
-                                    )
-                                  )
-                                ]
-                              )
-                            ),
-                          ]
+            Container(
+              margin: const EdgeInsets.only(left: 12.0, top: 55.0, right: 12.0),
+              child: Stack(
+                children: [
+                  if (widget.session.showBackground!)
+                    Background(
+                      areaWidth: areaWidth,
+                      areaHeight: areaHeight
+                    ),
+                  Column(
+                    children: [
+                      Center(
+                        child: SizedBox(
+                          width: areaWidth,
+                          height: areaHeight,
+                          child: TableScreen(
+                            list[_currentIndex],
+                            getXDistance(),
+                            getYDistance()
+                          )
+                        )
+                      ),
+                      Expanded(
+                        child: Container(
+                          width: areaWidth,
                         )
                       )
-                    ),
-                    Expanded(
-                      child: Container(
-                        color: Colors.green,
-                      )
-                    ),
-                  ]
-                ),
-                Column(
-                  children: [
-                    Center(
-                      child: SizedBox(
-                        width: areaWidth,
-                        height: areaHeight,
-                        child: TableScreen(list[_currentIndex], getXDistance(), getYDistance())
-                      )
-                    ),
-                    Expanded(
-                      child: Container(
-                        width: areaWidth,
-                      )
-                    )
-                  ]
-                )
-              ]
-            )
-          ),
+                    ]
+                  )
+                ]
+              )
+            ),
           if(stop)
-          const Center(
-            child: Text(
-              'Конец!',
-              style: TextStyle(fontSize: 30),
+            const Center(
+              child: Text(
+                'Конец!',
+                style: TextStyle(fontSize: 30),
+              )
             )
-          )
         ],
       )
     );
@@ -412,32 +354,4 @@ class TableScreen extends StatelessWidget {
     );
   }
 }
-
-class CrossPainter extends CustomPainter{
-
-  @override
-  void paint(Canvas canvas, Size size){
-
-    final line = Paint()
-      ..color = Colors.black
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 2.0;
-    canvas.drawLine(
-      const Offset(0.0, 10.0),
-      const Offset(20.0, 10.0),
-      line
-    );
-    canvas.drawLine(
-      const Offset(10.0, 0.0),
-      const Offset(10.0, 20.0),
-      line
-    );
-  }
-
-  @override
-  bool shouldRepaint(CustomPainter old){
-    return false;
-  }
-}
-
 

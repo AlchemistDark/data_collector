@@ -4,7 +4,8 @@ import 'package:flutter/material.dart';
 
 import 'package:data_collector/buttons.dart';
 import 'package:data_collector/session_class.dart';
-import 'package:data_collector/second_screen.dart';
+import 'package:data_collector/calibration_screen.dart';
+import 'package:data_collector/collection_screen.dart';
 
 class FirstPage extends StatefulWidget {
   final CameraDescription camera;
@@ -16,17 +17,19 @@ class FirstPage extends StatefulWidget {
 
 class _FirstPageState extends State<FirstPage> {
 
+  AppMode appMode = AppMode.calibration;
   String number = "0";
   Gender gender = Gender.male;
   PhoneModel model = PhoneModel.redmy;
   Distance distance = Distance.x15;
   MatrixSize matrixSize = MatrixSize.x5x7;
+  CrossMarksPosition crossMarksPosition = CrossMarksPosition.center;
   double screenTime = 2.0;
-  double photoTime = 0.25;
+  double photoTime = 0.75;
   bool? showBackground = false;
-  bool? autoFocusEneble = false;
+  bool? autoFocusEnable = false;
 
-  List<List<int>> _generateList(){
+  List<List<int>> _generateListForCollectionScreen(){
     int _wight;
     int _height;
     switch (matrixSize) {
@@ -50,6 +53,14 @@ class _FirstPageState extends State<FirstPage> {
       }
     }
     result.shuffle();
+    return result;
+  }
+
+  List<List<int>> _generateListForCalibrationScreen(){
+    List<List<int>> temp = [[1, 1], [1, 2], [2, 1], [2, 2], [3, 1], [3, 2]];
+    List<List<int>> result = [[1, 1], [1, 2], [2, 1], [2, 2], [3, 1], [3, 2]];
+    temp.shuffle();
+    result.addAll(temp);
     return result;
   }
 
@@ -84,16 +95,40 @@ class _FirstPageState extends State<FirstPage> {
   }
 
   void _startUp(){
-    Session session = Session(number, gender, model, distance, matrixSize, screenTime, photoTime, showBackground, autoFocusEneble);
-    List<List<int>> list = _generateList();
+    switch(appMode) {
+      case AppMode.calibration:
+        _calibration();
+        break;
+      case AppMode.collection:
+        _collection();
+        break;
+    }
+  }
+
+  void _collection(){
+    CollectionSession session = CollectionSession(number, gender, model, distance, matrixSize, screenTime, photoTime, showBackground, autoFocusEnable);
+    List<List<int>> list = _generateListForCollectionScreen();
     Navigator.push(
       context, MaterialPageRoute(
-      builder: (context) {
-        return SecondPage(session: session, list: list, camera: widget.camera,);
-      }
-    )
+        builder: (context) {
+          return CollectionPage(session: session, list: list, camera: widget.camera,);
+        }
+      )
     );
   }
+
+  void _calibration(){
+    CalibrationSession session = CalibrationSession(number, gender, model, distance, crossMarksPosition, screenTime, photoTime, showBackground, autoFocusEnable);
+    List<List<int>> list = _generateListForCalibrationScreen();
+    Navigator.push(
+      context, MaterialPageRoute(
+        builder: (context) {
+          return CalibrationPage(session: session, list: list, camera: widget.camera,);
+        }
+      )
+    );
+  }
+
 
   Widget build(BuildContext context) {
     return Scaffold(
@@ -105,12 +140,40 @@ class _FirstPageState extends State<FirstPage> {
         children: [
           Column(
             children: [
+              const Text("Режим"),
+              ListTile(
+                title: const Text('Каллиброка'),
+                leading: Radio<AppMode>(
+                  value: AppMode.calibration,
+                  groupValue: appMode,
+                  onChanged: (AppMode? value) {
+                    setState(() {
+                      appMode = value!;
+                    });
+                  },
+                ),
+              ),
+              ListTile(
+                title: const Text('Сбор данных'),
+                leading: Radio<AppMode>(
+                  value: AppMode.collection,
+                  groupValue: appMode,
+                  onChanged: (AppMode? value) {
+                    setState(() {
+                      appMode = value!;
+                    });
+                  },
+                ),
+              ),
               const Text("Номер"),
-              TextFormField(
-                initialValue: "Вводить сюда",
+              TextField(
                 keyboardType: TextInputType.number,
                 onChanged: (newText)=>_onNumberChanged(newText),
-                onFieldSubmitted: (newText)=>_onNumberChanged(newText)
+                onSubmitted: (newText)=>_onNumberChanged(newText),
+                decoration: const InputDecoration(
+                  border: OutlineInputBorder(),
+                  hintText: "Вводить сюда",
+                ),
               ),
               const Text("Пол"),
               ListTile(
@@ -199,6 +262,7 @@ class _FirstPageState extends State<FirstPage> {
                   },
                 ),
               ),
+              const Text("Время между крестиками"),
               Row(
                 children: [
                   Expanded(
@@ -219,6 +283,7 @@ class _FirstPageState extends State<FirstPage> {
                   )
                 ]
               ),
+              const Text("Время"),
               Row(
                 children: [
                   Expanded(
@@ -237,43 +302,76 @@ class _FirstPageState extends State<FirstPage> {
                   )
                 ]
               ),
-              const Text("Размер сетки"),
-              ListTile(
-                title: const Text('5 x 7'),
-                leading: Radio<MatrixSize>(
-                  value: MatrixSize.x5x7,
-                  groupValue: matrixSize,
-                  onChanged: (MatrixSize? value) {
-                    setState(() {
-                      matrixSize = value!;
-                    });
-                  },
+              if(appMode == AppMode.collection)
+                const Text("Размер сетки"),
+              if(appMode == AppMode.collection)
+                ListTile(
+                  title: const Text('5 x 7'),
+                  leading: Radio<MatrixSize>(
+                    value: MatrixSize.x5x7,
+                    groupValue: matrixSize,
+                    onChanged: (MatrixSize? value) {
+                      setState(() {
+                        matrixSize = value!;
+                      });
+                    },
+                  ),
                 ),
-              ),
-              ListTile(
-                title: const Text('7 x 10'),
-                leading: Radio<MatrixSize>(
-                  value: MatrixSize.x7x10,
-                  groupValue: matrixSize,
-                  onChanged: (MatrixSize? value) {
-                    setState(() {
-                      matrixSize = value!;
-                    });
-                  },
+              if(appMode == AppMode.collection)
+                ListTile(
+                  title: const Text('7 x 10'),
+                  leading: Radio<MatrixSize>(
+                    value: MatrixSize.x7x10,
+                    groupValue: matrixSize,
+                    onChanged: (MatrixSize? value) {
+                      setState(() {
+                        matrixSize = value!;
+                      });
+                    },
+                  ),
                 ),
-              ),
-              ListTile(
-                title: const Text('9 x 13'),
-                leading: Radio<MatrixSize>(
-                  value: MatrixSize.x9x13,
-                  groupValue: matrixSize,
-                  onChanged: (MatrixSize? value) {
-                    setState(() {
-                      matrixSize = value!;
-                    });
-                  },
+              if(appMode == AppMode.collection)
+                ListTile(
+                  title: const Text('9 x 13'),
+                  leading: Radio<MatrixSize>(
+                    value: MatrixSize.x9x13,
+                    groupValue: matrixSize,
+                    onChanged: (MatrixSize? value) {
+                      setState(() {
+                        matrixSize = value!;
+                      });
+                    },
+                  ),
                 ),
-              ),
+              if(appMode == AppMode.calibration)
+                const Text("Положение крестиков"),
+              if(appMode == AppMode.calibration)
+                ListTile(
+                  title: const Text('По центру'),
+                  leading: Radio<CrossMarksPosition>(
+                    value: CrossMarksPosition.center,
+                    groupValue: crossMarksPosition,
+                    onChanged: (CrossMarksPosition? value) {
+                      setState(() {
+                        crossMarksPosition = value!;
+                      });
+                    },
+                  ),
+                ),
+              if(appMode == AppMode.calibration)
+                ListTile(
+                  title: const Text('По углам'),
+                  leading: Radio<CrossMarksPosition>(
+                    value: CrossMarksPosition.edge,
+                    groupValue: crossMarksPosition,
+                    onChanged: (CrossMarksPosition? value) {
+                      setState(() {
+                        crossMarksPosition = value!;
+                      });
+                    },
+                  ),
+                ),
+
               CheckboxListTile(
                 title: const Text("Показывать фон?"),
                 value: showBackground,
@@ -286,10 +384,10 @@ class _FirstPageState extends State<FirstPage> {
               ),
               CheckboxListTile(
                 title: const Text("Использовать автофокус?"),
-                value: autoFocusEneble,
+                value: autoFocusEnable,
                 onChanged: (newValue) {
                   setState(() {
-                    autoFocusEneble = newValue;
+                    autoFocusEnable = newValue;
                   });
                 },
                 controlAffinity: ListTileControlAffinity.leading,  //  <-- leading Checkbox
