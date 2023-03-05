@@ -142,7 +142,7 @@ class _FirstPageState extends State<FirstPage> {
             children: [
               const Text("Режим"),
               ListTile(
-                title: const Text('Каллиброка'),
+                title: const Text('Калибровка'),
                 leading: Radio<AppMode>(
                   value: AppMode.calibration,
                   groupValue: appMode,

@@ -22,7 +22,7 @@ class _AnimatedButtonState extends State<AnimatedButton> {
   @override
   Widget build(BuildContext context) {
     Color green = const Color(0xFF52B69A);
-    Color color = const Color(0xFF454E54);
+    Color color = Colors.blueAccent;
 
     return Listener(
       child: Container(
@@ -30,10 +30,10 @@ class _AnimatedButtonState extends State<AnimatedButton> {
         width: 34,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(17),
-          color: color,
+          color: green,
           boxShadow: [
             BoxShadow(
-              color: isPressed? green : color,
+              color: isPressed? color : green,
               blurRadius: isPressed? 5 : 0,
               spreadRadius: 0,
             )
