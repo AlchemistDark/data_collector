@@ -6,6 +6,7 @@ import 'package:data_collector/buttons.dart';
 import 'package:data_collector/session_class.dart';
 import 'package:data_collector/calibration_screen.dart';
 import 'package:data_collector/collection_screen.dart';
+import 'package:data_collector/demo_screen.dart';
 
 class FirstPage extends StatefulWidget {
   final CameraDescription camera;
@@ -17,7 +18,7 @@ class FirstPage extends StatefulWidget {
 
 class _FirstPageState extends State<FirstPage> {
 
-  AppMode appMode = AppMode.calibration;
+  AppMode appMode = AppMode.demo;
   String number = "0";
   Gender gender = Gender.male;
   PhoneModel model = PhoneModel.redmy;
@@ -26,6 +27,7 @@ class _FirstPageState extends State<FirstPage> {
   CrossMarksPosition crossMarksPosition = CrossMarksPosition.center;
   double screenTime = 2.0;
   double photoTime = 0.75;
+  double delay = 5.0;
   bool? showBackground = false;
   bool? autoFocusEnable = false;
 
@@ -68,6 +70,19 @@ class _FirstPageState extends State<FirstPage> {
     number = newText;
   }
 
+  void _delayUp(){
+    delay = delay + 0.5;
+    setState(() {});
+    //}
+  }
+
+  void _delayDown(){
+    if(delay > 0) {
+      delay = delay - 0.5;
+      setState(() {});
+    }
+  }
+
   void _screenTimeUp(){
     //if(screenTime < 3.0) {
       screenTime = screenTime + 0.5;
@@ -81,6 +96,7 @@ class _FirstPageState extends State<FirstPage> {
       setState(() {});
     }
   }
+
   void _photoTimeUp(){
     if(photoTime < screenTime) {
       photoTime = photoTime + 0.05;
@@ -96,6 +112,9 @@ class _FirstPageState extends State<FirstPage> {
 
   void _startUp(){
     switch(appMode) {
+      case AppMode.demo:
+        _demo();
+        break;
       case AppMode.calibration:
         _calibration();
         break;
@@ -111,7 +130,7 @@ class _FirstPageState extends State<FirstPage> {
     Navigator.push(
       context, MaterialPageRoute(
         builder: (context) {
-          return CollectionPage(session: session, list: list, camera: widget.camera,);
+          return CollectionPage(session: session, list: list, camera: widget.camera);
         }
       )
     );
@@ -123,11 +142,23 @@ class _FirstPageState extends State<FirstPage> {
     Navigator.push(
       context, MaterialPageRoute(
         builder: (context) {
-          return CalibrationPage(session: session, list: list, camera: widget.camera,);
+          return CalibrationPage(session: session, list: list, camera: widget.camera);
         }
       )
     );
   }
+
+  void _demo(){
+    DemoSession session = DemoSession(number, gender, model, delay, true, autoFocusEnable);
+    Navigator.push(
+      context, MaterialPageRoute(
+        builder: (context) {
+          return DemoPage(session: session, camera: widget.camera);
+        }
+      )
+    );
+  }
+
 
 
   Widget build(BuildContext context) {
@@ -141,6 +172,18 @@ class _FirstPageState extends State<FirstPage> {
           Column(
             children: [
               const Text("Режим"),
+              ListTile(
+                title: const Text('Деморежим'),
+                leading: Radio<AppMode>(
+                  value: AppMode.demo,
+                  groupValue: appMode,
+                  onChanged: (AppMode? value) {
+                    setState(() {
+                      appMode = value!;
+                    });
+                  },
+                ),
+              ),
               ListTile(
                 title: const Text('Калибровка'),
                 leading: Radio<AppMode>(
@@ -237,77 +280,106 @@ class _FirstPageState extends State<FirstPage> {
                   },
                 ),
               ),
-              const Text("Расстояние"),
-              ListTile(
-                title: const Text('15 см'),
-                leading: Radio<Distance>(
-                  value: Distance.x15,
-                  groupValue: distance,
-                  onChanged: (Distance? value) {
-                    setState(() {
-                      distance = value!;
-                    });
-                  },
-                ),
-              ),
-              ListTile(
-                title: const Text('30 см'),
-                leading: Radio<Distance>(
-                  value: Distance.x30,
-                  groupValue: distance,
-                  onChanged: (Distance? value) {
-                    setState(() {
-                      distance = value!;
-                    });
-                  },
-                ),
-              ),
-              const Text("Время между крестиками"),
-              Row(
-                children: [
-                  Expanded(
-                    child: Text(
-                      '$screenTime',
-                      textAlign: TextAlign.center
-                    )
-                  ),
-                  AnimatedButton(
-                    icon: const Icon(Icons.add),
-                    onPressed: (){
-                      setState((){_screenTimeUp();});
-                    }
-                  ),
-                  AnimatedButton(
-                    icon: const Icon(Icons.remove),
-                    onPressed: (){setState((){_screenTimeDown();});}
-                  )
-                ]
-              ),
-              const Text("Время"),
-              Row(
-                children: [
-                  Expanded(
-                    child: Text(
-                      photoTime.toStringAsPrecision(2),
-                      textAlign: TextAlign.center
-                    )
-                  ),
-                  AnimatedButton(
-                    icon: const Icon(Icons.add),
-                    onPressed: (){setState((){_photoTimeUp();});}
-                  ),
-                  AnimatedButton(
-                    icon: const Icon(Icons.remove),
-                    onPressed: (){setState((){_photoTimeDown();});}
-                  )
-                ]
-              ),
-              if(appMode == AppMode.collection)
-                const Text("Размер сетки"),
-              if(appMode == AppMode.collection)
+              // if(appMode == AppMode.demo)
+              //   const Text("Время между фото"),
+              //   Row(
+              //     children: [
+              //       Expanded(
+              //         child: Text(
+              //           '$delay',
+              //           textAlign: TextAlign.center
+              //         )
+              //       ),
+              //       AnimatedButton(
+              //         icon: const Icon(Icons.add),
+              //         onPressed: (){
+              //           setState((){_delayUp();});
+              //         }
+              //       ),
+              //       AnimatedButton(
+              //         icon: const Icon(Icons.remove),
+              //         onPressed: (){setState((){_delayDown();});}
+              //       )
+              //     ]
+              //   ),
+              if(appMode == AppMode.calibration || appMode == AppMode.collection)
+                const Text("Расстояние"),
+              if(appMode == AppMode.calibration || appMode == AppMode.collection)
                 ListTile(
-                  title: const Text('5 x 7'),
-                  leading: Radio<MatrixSize>(
+                  title: const Text('15 см'),
+                  leading: Radio<Distance>(
+                    value: Distance.x15,
+                    groupValue: distance,
+                    onChanged: (Distance? value) {
+                      setState(() {
+                        distance = value!;
+                      });
+                    },
+                  ),
+                ),
+              if(appMode == AppMode.calibration || appMode == AppMode.collection)
+                ListTile(
+                  title: const Text('30 см'),
+                  leading: Radio<Distance>(
+                    value: Distance.x30,
+                    groupValue: distance,
+                    onChanged: (Distance? value) {
+                      setState(() {
+                        distance = value!;
+                      });
+                    },
+                  ),
+                ),
+              if(appMode == AppMode.calibration || appMode == AppMode.collection)
+                const Text("Время между крестиками"),
+              if(appMode == AppMode.calibration || appMode == AppMode.collection)
+                Row(
+                  children: [
+                     Expanded(
+                      child: Text(
+                        '$screenTime',
+                        textAlign: TextAlign.center
+                      )
+                    ),
+                    AnimatedButton(
+                      icon: const Icon(Icons.add),
+                      onPressed: (){
+                        setState((){_screenTimeUp();});
+                      }
+                    ),
+                    AnimatedButton(
+                      icon: const Icon(Icons.remove),
+                      onPressed: (){setState((){_screenTimeDown();});}
+                    )
+                  ]
+                ),
+              if(appMode == AppMode.calibration || appMode == AppMode.collection)
+                const Text("Время между фото"),
+              if(appMode == AppMode.calibration || appMode == AppMode.collection)
+                Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        photoTime.toStringAsPrecision(2),
+                        textAlign: TextAlign.center
+                      )
+                    ),
+                    AnimatedButton(
+                      icon: const Icon(Icons.add),
+                      onPressed: (){setState((){_photoTimeUp();});}
+                    ),
+                    AnimatedButton(
+                      icon: const Icon(Icons.remove),
+                      onPressed: (){setState((){_photoTimeDown();});}
+                    )
+                  ]
+                ),
+                if(appMode == AppMode.collection)
+                  const Text("Размер сетки"),
+                if(appMode == AppMode.collection)
+                  ListTile(
+                    title: const Text('5 x 7'),
+                    leading: Radio<MatrixSize>(
                     value: MatrixSize.x5x7,
                     groupValue: matrixSize,
                     onChanged: (MatrixSize? value) {
@@ -371,27 +443,28 @@ class _FirstPageState extends State<FirstPage> {
                     },
                   ),
                 ),
-
-              CheckboxListTile(
-                title: const Text("Показывать фон?"),
-                value: showBackground,
-                onChanged: (newValue) {
-                  setState(() {
-                    showBackground = newValue;
-                  });
-                },
-                controlAffinity: ListTileControlAffinity.leading,  //  <-- leading Checkbox
-              ),
-              CheckboxListTile(
-                title: const Text("Использовать автофокус?"),
-                value: autoFocusEnable,
-                onChanged: (newValue) {
-                  setState(() {
-                    autoFocusEnable = newValue;
-                  });
-                },
-                controlAffinity: ListTileControlAffinity.leading,  //  <-- leading Checkbox
-              )
+              if(appMode != AppMode.demo)
+                CheckboxListTile(
+                  title: const Text("Показывать фон?"),
+                  value: showBackground,
+                  onChanged: (newValue) {
+                    setState(() {
+                      showBackground = newValue;
+                    });
+                  },
+                  controlAffinity: ListTileControlAffinity.leading,  //  <-- leading Checkbox
+                ),
+              if(appMode != AppMode.demo)
+                CheckboxListTile(
+                  title: const Text("Использовать автофокус?"),
+                  value: autoFocusEnable,
+                  onChanged: (newValue) {
+                    setState(() {
+                      autoFocusEnable = newValue;
+                    });
+                  },
+                  controlAffinity: ListTileControlAffinity.leading,  //  <-- leading Checkbox
+                )
             ]
           )
         ]

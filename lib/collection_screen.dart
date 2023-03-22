@@ -22,7 +22,7 @@ class CollectionPage extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  State<CollectionPage> createState() => _CollectionPageState(session.screenTime, session.photoTime);
+  State<CollectionPage> createState() => _CollectionPageState();
 }
 
 class _CollectionPageState extends State<CollectionPage> {
@@ -38,13 +38,11 @@ class _CollectionPageState extends State<CollectionPage> {
   int photoCount = 0;
   int listIndex = 0;
   int photoNum = 0;
-  final double screenTime;
-  final double photoTime;
 
-  _CollectionPageState(this.screenTime, this.photoTime){
+  _CollectionPageState(){
     // photoNum хранить сколько фото должно быть сделано пока показывается один крестик.
     // Как только это количество будет сделано, отрисовывается новый.
-    photoNum = screenTime ~/ photoTime;
+    photoNum = widget.session.screenTime ~/ widget.session.photoTime;
   }
 
   String _getName(){

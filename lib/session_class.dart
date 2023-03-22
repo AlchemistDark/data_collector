@@ -46,7 +46,25 @@ class CalibrationSession{
   );
 }
 
-enum AppMode {calibration, collection}
+class DemoSession{
+  final String number;
+  final Gender gender;
+  final PhoneModel phoneModel;
+  final double delay;
+  final bool? showBackground;
+  final bool? autoFocusEnable;
+
+  DemoSession(
+    this.number,
+    this.gender,
+    this.phoneModel,
+    this.delay,
+    this.showBackground,
+    this.autoFocusEnable
+  );
+}
+
+enum AppMode {demo, calibration, collection}
 
 enum Gender {male, female}
 
